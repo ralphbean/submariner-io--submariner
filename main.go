@@ -136,6 +136,7 @@ func main() {
 			LocalRestConfig: restConfig,
 			LocalClient:     dynClient,
 			RestMapper:      restMapper,
+			Scheme:          scheme.Scheme,
 		},
 		WatcherConfig: watcher.Config{
 			RestConfig: restConfig,

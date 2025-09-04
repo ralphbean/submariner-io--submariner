@@ -12,7 +12,7 @@ COPY . ${SOURCE}
 RUN make -C ${SOURCE} LOCAL_BUILD=1 BUILD_UPX=false bin/${TARGETPLATFORM}/submariner-gateway
 RUN make -C ${SOURCE} LOCAL_BUILD=1 BUILD_UPX=false bin/${TARGETPLATFORM}/await-node-ready
 
-FROM --platform=${BUILDPLATFORM} fedora:${FEDORA_VERSION} AS base
+FROM fedora:42 AS base
 ARG FEDORA_VERSION
 ARG SOURCE
 ARG TARGETPLATFORM
@@ -22,9 +22,10 @@ COPY package/dnf_install /
 # iproute and iptables are used internally
 # libreswan provides IKE
 # kmod is required so that libreswan can load modules
-RUN /dnf_install -a ${TARGETPLATFORM} -v ${FEDORA_VERSION} -r /output/gateway \
+RUN /dnf_install -a ${TARGETPLATFORM} -v 42 -r /output/gateway \
     glibc bash glibc-minimal-langpack coreutils-single \
-    libcurl-minimal iproute libreswan kmod
+    libcurl-minimal iproute libreswan kmod \
+    openssl nss-tools
 
 FROM scratch
 ARG SOURCE

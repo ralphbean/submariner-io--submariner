@@ -30,6 +30,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/submariner-io/admiral/pkg/log"
 	"github.com/submariner-io/admiral/pkg/resource"
+	"github.com/submariner-io/admiral/pkg/syncer/broker"
 	v1 "github.com/submariner-io/submariner/pkg/apis/submariner.io/v1"
 	"github.com/submariner-io/submariner/pkg/cable"
 	"github.com/submariner-io/submariner/pkg/endpoint"
@@ -38,6 +39,7 @@ import (
 	"github.com/submariner-io/submariner/pkg/types"
 	"github.com/vishvananda/netlink"
 	"golang.zx2c4.com/wireguard/wgctrl/wgtypes"
+	"k8s.io/client-go/dynamic"
 	k8snet "k8s.io/utils/net"
 	"k8s.io/utils/ptr"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -86,7 +88,7 @@ type wireguard struct {
 }
 
 // NewDriver creates a new WireGuard driver.
-func NewDriver(localEndpoint *endpoint.Local, _ *types.SubmarinerCluster) (cable.Driver, error) {
+func NewDriver(syncerConfig broker.SyncerConfig, brokerClient dynamic.Interface, localEndpoint *endpoint.Local, _ *types.SubmarinerCluster) (cable.Driver, error) {
 	// We'll panic if localEndpoint is nil, this is intentional
 	var err error
 

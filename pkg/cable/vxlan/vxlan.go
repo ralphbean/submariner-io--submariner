@@ -26,6 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/submariner-io/admiral/pkg/log"
+	"github.com/submariner-io/admiral/pkg/syncer/broker"
 	v1 "github.com/submariner-io/submariner/pkg/apis/submariner.io/v1"
 	"github.com/submariner-io/submariner/pkg/cable"
 	"github.com/submariner-io/submariner/pkg/cni"
@@ -34,6 +35,7 @@ import (
 	netlinkAPI "github.com/submariner-io/submariner/pkg/netlink"
 	"github.com/submariner-io/submariner/pkg/types"
 	"github.com/submariner-io/submariner/pkg/vxlan"
+	"k8s.io/client-go/dynamic"
 	k8snet "k8s.io/utils/net"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -78,7 +80,7 @@ func init() {
 	cable.AddDriver(CableDriverName, NewDriver)
 }
 
-func NewDriver(localEndpoint *submendpoint.Local, localCluster *types.SubmarinerCluster) (cable.Driver, error) {
+func NewDriver(syncerConfig broker.SyncerConfig, brokerClient dynamic.Interface, localEndpoint *submendpoint.Local, localCluster *types.SubmarinerCluster) (cable.Driver, error) {
 	// We'll panic if localEndpoint or localCluster are nil, this is intentional
 	var err error
 
